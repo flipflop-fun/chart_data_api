@@ -8,6 +8,7 @@ import logger from './config/logger';
 import redisClient from './config/redis';
 import { SchedulerService } from './services/SchedulerService';
 import apiRoutes from './routes/api';
+import { HealthChecker } from './utils/healthCheck';
 
 dotenv.config();
 
@@ -77,13 +78,13 @@ process.on('SIGINT', async () => {
 app.listen(PORT, async () => {
   logger.info(`Server running on port ${PORT}`);
   
-  // Connect to Redis
-  try {
-    await redisClient.connect();
-  } catch (error) {
-    logger.error('Failed to connect to Redis:', error);
-  }
+  const servicesReady = await HealthChecker.waitForServices(5, 2000);
   
+  if (!servicesReady) {
+    logger.error('Critical services are not available. Exiting...');
+    process.exit(1);
+  }
+
   // Initialize scheduler
   SchedulerService.init();
 });

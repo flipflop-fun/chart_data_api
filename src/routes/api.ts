@@ -204,7 +204,7 @@ router.get('/mints', authenticateApiKey, asyncHandler(async (req: express.Reques
 
     // Cache the result for 10 minutes
     try {
-      await redisClient.setEx(cacheKey, 600, JSON.stringify(mints));
+      await redisClient.setex(cacheKey, 600, JSON.stringify(mints));
     } catch (cacheError) {
       logger.warn('Failed to cache mints data:', cacheError);
     }
@@ -280,7 +280,7 @@ router.get('/transactions/:mintAddress', authenticateApiKey, asyncHandler(async 
 
     // Cache the result for 2 minutes
     try {
-      await redisClient.setEx(cacheKey, 120, JSON.stringify(transactions));
+      await redisClient.setex(cacheKey, 120, JSON.stringify(transactions));
     } catch (cacheError) {
       logger.warn('Failed to cache transaction data:', cacheError);
     }
@@ -390,7 +390,7 @@ router.get('/ohlc/:mintAddress', authenticateApiKey, asyncHandler(async (req: ex
 
     // Cache the result for 5 minutes
     try {
-      await redisClient.setEx(cacheKey, 300, JSON.stringify(ohlcData));
+      await redisClient.setex(cacheKey, 300, JSON.stringify(ohlcData));
     } catch (cacheError) {
       logger.warn('Failed to cache OHLC data:', cacheError);
     }
