@@ -1,1 +1,0 @@
-rsync -avz --exclude='node_modules' --exclude='.*' --exclude='dist' --exclude='logs' ./ root@139.59.235.199:/opt/flipflop-chart-api/
