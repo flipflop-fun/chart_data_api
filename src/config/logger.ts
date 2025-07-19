@@ -9,19 +9,13 @@ const logger = winston.createLogger({
   ),
   defaultMeta: { service: 'mint-price-api' },
   transports: [
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.colorize(),
-        winston.format.simple()
-      )
-    })
+    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'logs/combined.log' }),
   ],
 });
 
-// if (process.env.NODE_ENV !== 'production' && process.env.VERCEL !== '1') {
-//   logger.add(new winston.transports.File({ filename: 'logs/error.log', level: 'error' }));
-//   logger.add(new winston.transports.File({ filename: 'logs/combined.log' }));
-// }
+logger.add(new winston.transports.Console({
+  format: winston.format.simple()
+}));
 
 export default logger;
