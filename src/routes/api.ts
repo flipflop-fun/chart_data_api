@@ -62,7 +62,7 @@ const authenticateApiKey = (req: express.Request, res: express.Response, next: e
     });
   }
   
-  next();
+  return next();
 };
 
 // Admin authentication middleware
@@ -84,7 +84,7 @@ const authenticateAdminApiKey = (req: express.Request, res: express.Response, ne
     });
   }
   
-  next();
+  return next();
 };
 
 // Get scheduler status
