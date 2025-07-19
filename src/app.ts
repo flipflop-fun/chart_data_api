@@ -74,19 +74,24 @@ process.on('SIGINT', async () => {
   process.exit(0);
 });
 
-// Start server
-app.listen(PORT, async () => {
-  logger.info(`Server running on port ${PORT}`);
-  
+// Initialize services for Vercel deployment
+(async () => {
   const servicesReady = await HealthChecker.waitForServices(5, 2000);
   
-  if (!servicesReady) {
-    logger.error('Critical services are not available. Exiting...');
-    process.exit(1);
+  if (servicesReady) {
+    // Initialize scheduler
+    SchedulerService.init();
+    logger.info('Services initialized successfully');
+  } else {
+    logger.warn('Some services are not available, continuing with limited functionality');
   }
+})();
 
-  // Initialize scheduler
-  SchedulerService.init();
-});
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    logger.info(`Server running on port ${PORT}`);
+  });
+}
 
 export default app;
