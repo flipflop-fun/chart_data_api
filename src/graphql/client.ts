@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// 定义 GraphQL 响应接口
+// Define GraphQL response interface
 interface GraphQLResponse<T = any> {
   data?: T;
   errors?: Array<{

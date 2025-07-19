@@ -29,7 +29,7 @@ export class OHLCData {
     return result.rows[0];
   }
 
-  static async getLatestTimestamp(mintId: string, period: Period): Promise<number | null> { // 改为 string 类型
+  static async getLatestTimestamp(mintId: string, period: Period): Promise<number | null> { // Changed to string type
     const query = `
       SELECT MAX(timestamp) as latest_timestamp 
       FROM ohlc_data 
@@ -61,16 +61,16 @@ export class OHLCData {
       params.push(to);
     }
     
-    query += ` ORDER BY timestamp ASC LIMIT $${params.length + 1}`;
+    query += ` ORDER BY timestamp DESC LIMIT $${params.length + 1}`;
     params.push(limit);
     
     const result = await pool.query(query, params);
     return result.rows;
   }
 
-  // 保留原有方法以保持兼容性
+  // Keep original method for compatibility
   static async getByMintAndPeriod(
-    mintId: string, // 改为 string 类型
+    mintId: string, // Changed to string type
     period: Period,
     startTime: number,
     endTime: number,
@@ -87,7 +87,7 @@ export class OHLCData {
   }
 
   static async getLatestByMintAndPeriod(
-    mintId: string, // 改为 string 类型
+    mintId: string, // Changed to string type
     period: Period
   ): Promise<OHLCRecord | undefined> {
     const query = `
@@ -100,7 +100,7 @@ export class OHLCData {
     return result.rows[0];
   }
 
-  // 添加删除指定mint和period的所有OHLC数据的方法
+  // Method to delete all OHLC data for a specific mint and period
   static async deleteByMintAndPeriod(mintId: string, period: string): Promise<void> {
     const query = `
       DELETE FROM ohlc_data 

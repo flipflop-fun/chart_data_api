@@ -155,7 +155,7 @@ export class OHLCService {
     
     let high = sortedTransactions[0].price;
     let low = sortedTransactions[0].price;
-    let volume = 0n;  // 使用 BigInt
+    let volume = 0n;  // Using BigInt
 
     for (const transaction of sortedTransactions) {
       const price = transaction.price;
@@ -177,7 +177,7 @@ export class OHLCService {
     };
   }
 
-  // 添加这个方法来重建所有历史OHLC数据
+  // Add this method to rebuild all historical OHLC data
   static async rebuildOHLCForMint(mintAddress: string, period?: string): Promise<string[]> {
     try {
       const mint = await Mint.findByAddress(mintAddress.trim());
@@ -190,10 +190,10 @@ export class OHLCService {
 
       for (const p of periodsToProcess) {
         try {
-          // 删除该mint和period的所有现有OHLC数据
+          // Delete all existing OHLC data for this mint and period
           await OHLCData.deleteByMintAndPeriod(mint.address, p);
           
-          // 重新生成所有历史数据
+          // Regenerate all historical data
           const count = await this.generateOHLCForPeriodFromBeginning(mint.address, p);
           if (count > 0) {
             updatedPeriods.push(p);
@@ -211,7 +211,7 @@ export class OHLCService {
     }
   }
 
-  // 从头开始生成OHLC数据的私有方法
+  // Private method to generate OHLC data from the beginning
   private static async generateOHLCForPeriodFromBeginning(mintId: string, period: string): Promise<number> {
     try {
       const periodMinutes = this.PERIOD_MINUTES[period];
@@ -253,7 +253,6 @@ export class OHLCService {
     }
   }
 
-  // 重建所有mint的所有历史OHLC数据
   static async rebuildOHLCForAllMints(): Promise<number> {
     try {
       const mints = await Mint.getAll();

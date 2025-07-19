@@ -4,7 +4,7 @@ CREATE DATABASE mint_price_api;
 -- Use the database
 \c mint_price_api;
 
--- Create transactions table for raw data (mint_id 改为 varchar)
+-- Create transactions table for raw data (mint_id changed to varchar)
 CREATE TABLE transactions (
     id SERIAL PRIMARY KEY,
     mint_id VARCHAR(70) NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE transactions (
     UNIQUE(mint_id, timestamp)
 );
 
--- Create OHLC data table (mint_id 改为 varchar)
+-- Create OHLC data table (mint_id changed to varchar)
 CREATE TABLE ohlc_data (
     id SERIAL PRIMARY KEY,
     mint_id VARCHAR(70) NOT NULL,
@@ -54,4 +54,4 @@ $$ language 'plpgsql';
 CREATE TRIGGER update_ohlc_updated_at BEFORE UPDATE ON ohlc_data
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
--- 4. 同时修正 schema.sql 文件
+-- 4. Also update schema.sql file

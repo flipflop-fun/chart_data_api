@@ -2,7 +2,7 @@ import client from '../graphql/client';
 import { GET_MINT_BY_ADDRESS, GET_ALL_MINTS } from '../graphql/queries';
 import { MintRecord } from '../types';
 
-// 定义 GraphQL 响应接口
+// Define GraphQL response interface
 interface InitializeTokenEventEntity {
   mint: string;
   tokenName: string;
@@ -39,7 +39,7 @@ export class Mint {
     try {
       const response = await client.request<GraphQLMintResponse>(GET_ALL_MINTS);
       
-      // 将 GraphQL 响应转换为 MintRecord 数组
+      // Convert GraphQL response to MintRecord array
       return response.initializeTokenEventEntities.map(entity => ({
         address: entity.mint,
         name: entity.tokenName || undefined,

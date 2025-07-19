@@ -1,4 +1,4 @@
-// 获取指定 mint 的交易数据（用于图表）
+// Get transaction data for a specific mint (for charts)
 export const queryAllTokenMintForChart = `
   query QueryAllTokenMintForChart($mint: String!, $skip: Int!, $first: Int!) {
     mintTokenEntities(
@@ -17,7 +17,7 @@ export const queryAllTokenMintForChart = `
   }
 `;
 
-// 获取指定 mint 的交易数据（通用查询）
+// Get transaction data for a specific mint (general query)
 export const GET_MINT_TRANSACTIONS = `
   query GetMintTransactions($mintAddress: String!, $limit: Int, $offset: Int) {
     mintTokenEntities(
@@ -36,7 +36,7 @@ export const GET_MINT_TRANSACTIONS = `
   }
 `;
 
-// 根据地址查找单个 mint 信息
+// Find a single mint by address
 export const GET_MINT_BY_ADDRESS = `
   query GetMintByAddress($mint: String!) {
     initializeTokenEventEntities(where: {mint: $mint}) {
@@ -48,7 +48,7 @@ export const GET_MINT_BY_ADDRESS = `
   }
 `;
 
-// 获取所有 mint 信息
+// Get all mint information
 export const GET_ALL_MINTS = `
   query GetAllMints {
     initializeTokenEventEntities {

@@ -18,7 +18,7 @@ export interface MintRecord {
 
 export interface TransactionRecord {
   id: number;
-  mint_id: string; // 改为 string 类型
+  mint_id: string; // Changed to string type
   timestamp: number;
   mint_size_epoch: number;
   mint_fee: number;
@@ -30,7 +30,7 @@ export interface TransactionRecord {
 
 export interface OHLCRecord {
   id: number;
-  mint_id: string; // 改为 string 类型
+  mint_id: string; // Changed to string type
   period: string;
   timestamp: number;
   open_price: string;

@@ -21,7 +21,7 @@ export class SchedulerService {
       });
 
       // Schedule OHLC generation every 5 minutes
-      this.ohlcGenerationJob = schedule.scheduleJob('*/2 * * * *', async () => {
+      this.ohlcGenerationJob = schedule.scheduleJob('*/3 * * * *', async () => {
         logger.info(`Starting scheduled OHLC generation at ${new Date().toISOString()}...`);
         try {
           const totalGenerated = await OHLCService.generateOHLCForAllMints();

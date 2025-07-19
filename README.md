@@ -1,65 +1,65 @@
 # Solana Mint Price Line API
 
-一个用于获取 Solana Token Mint 价格数据和 OHLC 图表数据的 RESTful API 服务。
+A RESTful API service for retrieving Solana Token Mint price data and OHLC chart data.
 
-## 功能特性
+## Features
 
-- 📊 OHLC (开高低收) 数据获取
-- 💰 交易数据查询
-- 🔍 Mint 地址管理
-- ⚡ Redis 缓存优化
-- 🔐 API 密钥认证
-- 📈 多时间周期支持 (5m, 15m, 30m, 1h, 4h, 1d)
-- 🚀 手动数据触发功能
+- 📊 OHLC (Open-High-Low-Close) data retrieval
+- 💰 Transaction data queries
+- 🔍 Mint address management
+- ⚡ Redis cache optimization
+- 🔐 API key authentication
+- 📈 Multiple time period support (5m, 15m, 30m, 1h, 4h, 1d)
+- 🚀 Manual data trigger functionality
 
-## 快速开始
+## Quick Start
 
-### 环境配置
+### Environment Setup
 
-1. 复制环境变量文件：
+1. Copy the environment variables file:
 ```bash
 cp .env.example .env
 ```
 
-### 安装依赖
+### Install Dependencies
 
 ```bash
 yarn install
 ```
 
-### 启动服务
+### Start the Service
 
 ```bash
-# 开发模式
+# Development mode
 yarn dev
 
-# 生产模式
+# Production mode
 yarn start
 
-# 使用 Docker
+# Using Docker
 yarn docker:up
 ```
 
-服务将在 `http://localhost:9090` 启动。
+The service will start at `http://localhost:9090`.
 
-## API 文档
+## API Documentation
 
-### 认证
+### Authentication
 
-所有 API 请求都需要在请求头中包含有效的 API 密钥：
+All API requests require a valid API key in the request header:
 
 ```
 x-api-key: API_KEY
 ```
 
-### API 端点
+### API Endpoints
 
-以下示例中，Mint 地址为 `FpuSjtzgiFKADiyPzW8EiayvmtYdqdQqoNYQS4Uz3PKR`
+In the following examples, the Mint address is `FpuSjtzgiFKADiyPzW8EiayvmtYdqdQqoNYQS4Uz3PKR`
 
-dev-api-key 为 `wZdY5cFq3Qoqd2SaEr2Y2AMQbkZc1Glj`
+The dev-api-key is `wZdY5cFq3Qoqd2SaEr2Y2AMQbkZc1Glj`
 
-#### 检查API健康状态
-**GET** `/api/v1/status/health`
+#### Check API Health Status
+**GET** `/api/v1/status/health`
 
 ```bash
 curl -X GET "http://localhost:9090/api/v1/status/health" \
@@ -67,8 +67,8 @@ curl -X GET "http://localhost:9090/api/v1/status/health" \
   -H "Content-Type: application/json"
 ```
 
-#### 检查数据抓取服务状态
-**GET** `/api/v1/status/scheduler`
+#### Check Data Fetching Service Status
+**GET** `/api/v1/status/scheduler`
 
 ```bash
 curl -X GET "http://localhost:9090/api/v1/status/scheduler" \
@@ -76,37 +76,37 @@ curl -X GET "http://localhost:9090/api/v1/status/scheduler" \
   -H "Content-Type: application/json"
 ```
 
-#### 手动重建单个mint的OHLC数据：
+#### Manually Rebuild OHLC Data for a Single Mint:
 ```bash
-# 重建特定mint的所有周期OHLC数据
+# Rebuild all period OHLC data for a specific mint
 curl -X POST http://localhost:9090/api/v1/ohlc/rebuild/FpuSjtzgiFKADiyPzW8EiayvmtYdqdQqoNYQS4Uz3PKR \
   -H "x-api-key: wZdY5cFq3Qoqd2SaEr2Y2AMQbkZc1Glj"
 
-# 重建特定mint的特定周期OHLC数据
+# Rebuild specific period OHLC data for a specific mint
 curl -X POST http://localhost:9090/api/v1/ohlc/rebuild/FpuSjtzgiFKADiyPzW8EiayvmtYdqdQqoNYQS4Uz3PKR \
   -H "x-api-key: wZdY5cFq3Qoqd2SaEr2Y2AMQbkZc1Glj" \
   -H "Content-Type: application/json" \
   -d '{"period": "1d"}'
 ```
 
-#### 重建所有mint的OHLC数据：
+#### Rebuild OHLC Data for All Mints:
 ```bash
 curl -X POST http://localhost:9090/api/v1/ohlc/rebuild-all -H "x-api-key: wZdY5cFq3Qoqd2SaEr2Y2AMQbkZc1Glj"
 ```
 
-#### 获取 OHLC 数据
+#### Get OHLC Data
 
-**GET** `/api/v1/ohlc/{mintAddress}`
+**GET** `/api/v1/ohlc/{mintAddress}`
 
-获取指定 Mint 地址的 OHLC (开高低收) 数据。
+Retrieve OHLC (Open-High-Low-Close) data for a specified Mint address.
 
-**参数：**
-- `period` (必需): 时间周期 - `5m`, `15m`, `30m`, `1h`, `4h`, `1d`
-- `from` (可选): 开始时间戳
-- `to` (可选): 结束时间戳
-- `limit` (可选): 返回数量限制 (1-1000，默认100)
+**Parameters:**
+- `period` (required): Time period - `5m`, `15m`, `30m`, `1h`, `4h`, `1d`
+- `from` (optional): Start timestamp
+- `to` (optional): End timestamp
+- `limit` (optional): Response limit (1-1000, default 100)
 
-**示例：**
+**Examples:**
 ```bash
 curl -X GET "http://localhost:9090/api/v1/ohlc/FpuSjtzgiFKADiyPzW8EiayvmtYdqdQqoNYQS4Uz3PKR?period=1d&limit=50" \
   -H "x-api-key: wZdY5cFq3Qoqd2SaEr2Y2AMQbkZc1Glj" \
@@ -117,44 +117,44 @@ curl -X GET "http://localhost:9090/api/v1/ohlc/FpuSjtzgiFKADiyPzW8EiayvmtYdqdQqo
   -H "Content-Type: application/json"
 ```
 
-#### 获取交易数据
+#### Get Transaction Data
 
-**GET** `/api/v1/transactions/{mintAddress}`
+**GET** `/api/v1/transactions/{mintAddress}`
 
-获取指定 Mint 地址的交易数据。
+Retrieve transaction data for a specified Mint address.
 
-**参数：**
-- `from` (可选): 开始时间戳
-- `to` (可选): 结束时间戳
-- `limit` (可选): 返回数量限制 (1-1000，默认100)
+**Parameters:**
+- `from` (optional): Start timestamp
+- `to` (optional): End timestamp
+- `limit` (optional): Response limit (1-1000, default 100)
 
-**示例：**
+**Example:**
 ```bash
 curl -X GET "http://localhost:9090/api/v1/transactions/FpuSjtzgiFKADiyPzW8EiayvmtYdqdQqoNYQS4Uz3PKR?limit=100" \
   -H "x-api-key: wZdY5cFq3Qoqd2SaEr2Y2AMQbkZc1Glj" \
   -H "Content-Type: application/json"
 ```
 
-#### 获取所有 Mint 列表
+#### Get All Mint Addresses
 
-**GET** `/api/v1/mints`
+**GET** `/api/v1/mints`
 
-获取系统中所有可用的 Mint 地址列表。
+Retrieve a list of all available Mint addresses in the system.
 
-**示例：**
+**Example:**
 ```bash
 curl -X GET "http://localhost:9090/api/v1/mints" \
   -H "x-api-key: wZdY5cFq3Qoqd2SaEr2Y2AMQbkZc1Glj" \
   -H "Content-Type: application/json"
 ```
 
-#### 手动触发数据获取
+#### Manually Trigger Data Fetching
 
-**POST** `/api/v1/transaction/fetch/{mintAddress}`
+**POST** `/api/v1/transaction/fetch/{mintAddress}`
 
-手动触发指定 Mint 地址的数据获取（用于调试/管理）。
+Manually trigger data fetching for a specified Mint address (for debugging/management).
 
-**示例：**
+**Example:**
 ```bash
 curl -X POST "http://localhost:9090/api/v1/transaction/fetch/FpuSjtzgiFKADiyPzW8EiayvmtYdqdQqoNYQS4Uz3PKR" \
   -H "x-api-key: wZdY5cFq3Qoqd2SaEr2Y2AMQbkZc1Glj" \
