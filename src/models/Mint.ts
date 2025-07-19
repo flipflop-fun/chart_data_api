@@ -8,6 +8,7 @@ interface InitializeTokenEventEntity {
   tokenName: string;
   tokenSymbol: string;
   tokenId: string;
+  feeRate: number;
 }
 
 interface GraphQLMintResponse {
@@ -28,6 +29,7 @@ export class Mint {
         address: entity.mint,
         name: entity.tokenName || undefined,
         symbol: entity.tokenSymbol || undefined,
+        feeRate: entity.feeRate || 0,
       };
     } catch (error) {
       console.error('Error fetching mint by address:', error);
@@ -44,6 +46,7 @@ export class Mint {
         address: entity.mint,
         name: entity.tokenName || undefined,
         symbol: entity.tokenSymbol || undefined,
+        feeRate: entity.feeRate || 0,
       }));
     } catch (error) {
       console.error('Error fetching all mints:', error);

@@ -14,6 +14,7 @@ export interface MintRecord {
   address: string;
   name?: string;
   symbol?: string;
+  feeRate: number;
 }
 
 export interface TransactionRecord {

@@ -49,14 +49,15 @@ export class DataFetchService {
           }
 
           const mintSizeEpoch = parseFloat(tx.mintSizeEpoch);
-          const mintFee = parseFloat(tx.mintFee);
-          const price = mintSizeEpoch > 0 ? mintFee / mintSizeEpoch : 0;
+          // const mintFee = parseFloat(tx.mintFee);
+          const feeRate = mint.feeRate; // Use feeRate from mint instead of actural mint fee
+          const price = mintSizeEpoch > 0 ? feeRate / mintSizeEpoch : 0;
 
           await Transaction.create(
             mint.address,
             timestamp,
             mintSizeEpoch,
-            mintFee,
+            feeRate,
             price,
             tx.currentEra,
             tx.currentEpoch

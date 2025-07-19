@@ -44,6 +44,7 @@ export const GET_MINT_BY_ADDRESS = `
       tokenName
       tokenSymbol
       tokenId
+      feeRate
     }
   }
 `;
