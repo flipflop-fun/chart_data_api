@@ -15,6 +15,9 @@ dotenv.config();
 const app = express();
 const PORT = parseInt(process.env.PORT || '9090');
 
+// 配置 trust proxy 以支持 Vercel 等云平台
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet());
 app.use(cors({
@@ -22,7 +25,7 @@ app.use(cors({
   credentials: true
 }));
 
-// Rate limiting
+// Rate limiting - 为 Vercel 环境优化配置
 const limiter = rateLimit({
   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000'), // 15 minutes
   max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100'), // limit each IP to 100 requests per windowMs
@@ -32,6 +35,11 @@ const limiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
+
+  validate: {
+    xForwardedForHeader: false, // 禁用 X-Forwarded-For 验证
+    trustProxy: false // 禁用 trust proxy 验证
+  }
 });
 app.use(limiter);
 
