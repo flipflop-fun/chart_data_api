@@ -9,6 +9,8 @@ import { SchedulerService } from '../services/SchedulerService';
 import redisClient from '../config/redis';
 import logger from '../config/logger';
 import { APIResponse, OHLCQueryParams, TransactionQueryParams } from '../types';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const router = express.Router();
 
@@ -31,8 +33,8 @@ const transactionQuerySchema = Joi.object({
 });
 
 // Helper function to generate cache key
-const generateCacheKey = (prefix: string, ...parts: string[]): string => {
-  return `${prefix}:${parts.join(':')}`;
+const generateCacheKey = (network: string, prefix: string, ...parts: string[]): string => {
+  return `${network}:${prefix}:${parts.join(':')}`;
 };
 
 // Helper function to handle async route errors
@@ -182,7 +184,7 @@ router.get('/status/health', authenticateApiKey, asyncHandler(async (req: expres
 // Get all available mints
 router.get('/mints', authenticateApiKey, asyncHandler(async (req: express.Request, res: express.Response): Promise<express.Response> => {
   try {
-    const cacheKey = 'mints:all';
+    const cacheKey = generateCacheKey(process.env.NETWORK || 'mainnet', 'mints:all');
     
     // Check cache first
     try {
@@ -251,7 +253,7 @@ router.get('/transactions/:mintAddress', authenticateApiKey, asyncHandler(async 
     const { from, to, limit } = queryParams as TransactionQueryParams;
 
     // Check cache first
-    const cacheKey = generateCacheKey('transactions', mintAddress, String(from || ''), String(to || ''), String(limit));
+    const cacheKey = generateCacheKey(process.env.NETWORK || 'mainnet', 'transactions', mintAddress, String(from || ''), String(to || ''), String(limit));
     try {
       const cachedData = await redisClient.get(cacheKey);
       if (cachedData) {
@@ -361,7 +363,7 @@ router.get('/ohlc/:mintAddress', authenticateApiKey, asyncHandler(async (req: ex
     const { period, from, to, limit } = queryParams as OHLCQueryParams;
 
     // Check cache first
-    const cacheKey = generateCacheKey('ohlc', mintAddress, period, String(from || ''), String(to || ''), String(limit));
+    const cacheKey = generateCacheKey(process.env.NETWORK || 'mainnet', 'ohlc', mintAddress, period, String(from || ''), String(to || ''), String(limit));
     try {
       const cachedData = await redisClient.get(cacheKey);
       if (cachedData) {

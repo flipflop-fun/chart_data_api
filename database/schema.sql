@@ -1,5 +1,5 @@
 -- Create database
-CREATE DATABASE mint_price_api;
+CREATE DATABASE mint_price_api_testnet;
 
 -- Use the database
 \c mint_price_api;
