@@ -78,15 +78,12 @@ export class OHLCService {
 
       // Get the latest OHLC timestamp for this mint and period
       const latestOHLC = await OHLCData.getLatestTimestamp(mintId, period as any);
-      console.log("++++", latestOHLC, periodMinutes, periodMinutes * 60);
       const startTime = Number(latestOHLC) ? Number(latestOHLC) + Number(periodMinutes * 60) : 0; // If startTime is 0, that means fetch from beginning.
-      console.log("start time", startTime);
       // Get transactions since the last OHLC timestamp
       const transactions = await Transaction.findByMintIdAndTimeRange(mintId, startTime);
       if (transactions.length === 0) {
         return 0;
       }
-      console.log("===>", mintId, period, latestOHLC, startTime, transactions.length);
 
       // Group transactions by time periods
       const groupedTransactions = this.groupTransactionsByPeriod(transactions, periodMinutes);

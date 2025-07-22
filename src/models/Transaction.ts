@@ -38,15 +38,14 @@ export class Transaction {
       SELECT * FROM transactions 
       WHERE mint_id = $1 AND timestamp >= $2
     `;
-    const params: any[] = [mintId, Math.floor(startTime / 1000)];
+    const params: any[] = [mintId, Math.floor(startTime)];
     
     if (endTime !== undefined) {
       query += ` AND timestamp <= $3`;
-      params.push(Math.floor(endTime / 1000));
+      params.push(Math.floor(endTime));
     }
     
     query += ` ORDER BY timestamp ASC`;
-    console.log("=== query:", query, params);
     const result = await pool.query(query, params);
     return result.rows;
   }
