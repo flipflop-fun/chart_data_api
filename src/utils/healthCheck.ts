@@ -1,5 +1,5 @@
 import pool from '../config/database';
-import redisClient from '../config/redis';
+// import redisClient from '../config/redis';
 import logger from '../config/logger';
 
 export interface HealthCheckResult {
@@ -32,29 +32,29 @@ export class HealthChecker {
     }
   }
 
-  static async checkRedis(): Promise<HealthCheckResult> {
-    try {
-      const pong = await redisClient.ping();
-      return {
-        service: 'redis',
-        status: pong === 'PONG' ? 'healthy' : 'unhealthy',
-        message: `Response: ${pong}`,
-        timestamp: new Date()
-      };
-    } catch (error) {
-      return {
-        service: 'redis',
-        status: 'unhealthy',
-        message: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date()
-      };
-    }
-  }
+  // static async checkRedis(): Promise<HealthCheckResult> {
+  //   try {
+  //     const pong = await redisClient.ping();
+  //     return {
+  //       service: 'redis',
+  //       status: pong === 'PONG' ? 'healthy' : 'unhealthy',
+  //       message: `Response: ${pong}`,
+  //       timestamp: new Date()
+  //     };
+  //   } catch (error) {
+  //     return {
+  //       service: 'redis',
+  //       status: 'unhealthy',
+  //       message: error instanceof Error ? error.message : 'Unknown error',
+  //       timestamp: new Date()
+  //     };
+  //   }
+  // }
 
   static async checkAllServices(): Promise<HealthCheckResult[]> {
     const checks = await Promise.all([
       this.checkDatabase(),
-      this.checkRedis()
+      // this.checkRedis()
     ]);
     
     checks.forEach(check => {

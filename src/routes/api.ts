@@ -6,7 +6,7 @@ import { OHLCData } from '../models/OHLCData';
 import { DataFetchService } from '../services/DataFetchService';
 import { OHLCService } from '../services/OHLCService';
 import { SchedulerService } from '../services/SchedulerService';
-import redisClient from '../config/redis';
+// import redisClient from '../config/redis';
 import logger from '../config/logger';
 import { APIResponse, OHLCQueryParams, TransactionQueryParams } from '../types';
 import dotenv from 'dotenv';
@@ -119,13 +119,13 @@ router.get('/status/health', authenticateApiKey, asyncHandler(async (req: expres
     const schedulerStatus = SchedulerService.getStatus();
     
     // Check Redis connection
-    let redisStatus = false;
-    try {
-      await redisClient.ping();
-      redisStatus = true;
-    } catch (redisError) {
-      logger.warn('Redis health check failed:', redisError);
-    }
+    // let redisStatus = false;
+    // try {
+    //   await redisClient.ping();
+    //   redisStatus = true;
+    // } catch (redisError) {
+    //   logger.warn('Redis health check failed:', redisError);
+    // }
 
     // Check database connection (you can add database ping here if needed)
     const dbStatus = true; // Placeholder - implement actual DB health check
@@ -139,9 +139,9 @@ router.get('/status/health', authenticateApiKey, asyncHandler(async (req: expres
           status: schedulerStatus.dataFetchJob && schedulerStatus.ohlcGenerationJob ? 'running' : 'partial',
           jobs: schedulerStatus
         },
-        redis: {
-          status: redisStatus ? 'connected' : 'disconnected'
-        },
+        // redis: {
+        //   status: redisStatus ? 'connected' : 'disconnected'
+        // },
         database: {
           status: dbStatus ? 'connected' : 'disconnected'
         }
@@ -156,7 +156,7 @@ router.get('/status/health', authenticateApiKey, asyncHandler(async (req: expres
     // Determine overall health status
     const isHealthy = schedulerStatus.dataFetchJob && 
                       schedulerStatus.ohlcGenerationJob && 
-                      redisStatus && 
+                      // redisStatus && 
                       dbStatus;
 
     healthData.status = isHealthy ? 'healthy' : 'degraded';
@@ -187,29 +187,29 @@ router.get('/mints', authenticateApiKey, asyncHandler(async (req: express.Reques
     const cacheKey = generateCacheKey(process.env.NETWORK || 'mainnet', 'mints:all');
     
     // Check cache first
-    try {
-      const cachedData = await redisClient.get(cacheKey);
-      if (cachedData) {
-        logger.info('Cache hit for mints list');
-        return res.json({
-          success: true,
-          data: JSON.parse(cachedData),
-          cached: true
-        } as APIResponse);
-      }
-    } catch (cacheError) {
-      logger.warn('Redis cache error:', cacheError);
-    }
+    // try {
+    //   const cachedData = await redisClient.get(cacheKey);
+    //   if (cachedData) {
+    //     logger.info('Cache hit for mints list');
+    //     return res.json({
+    //       success: true,
+    //       data: JSON.parse(cachedData),
+    //       cached: true
+    //     } as APIResponse);
+    //   }
+    // } catch (cacheError) {
+    //   logger.warn('Redis cache error:', cacheError);
+    // }
 
     // Fetch all mints
     const mints = await Mint.getAll();
 
     // Cache the result for 10 minutes
-    try {
-      await redisClient.setex(cacheKey, 600, JSON.stringify(mints));
-    } catch (cacheError) {
-      logger.warn('Failed to cache mints data:', cacheError);
-    }
+    // try {
+    //   await redisClient.setex(cacheKey, 600, JSON.stringify(mints));
+    // } catch (cacheError) {
+    //   logger.warn('Failed to cache mints data:', cacheError);
+    // }
 
     return res.json({
       success: true,
@@ -253,20 +253,20 @@ router.get('/transactions/:mintAddress', authenticateApiKey, asyncHandler(async 
     const { from, to, limit } = queryParams as TransactionQueryParams;
 
     // Check cache first
-    const cacheKey = generateCacheKey(process.env.NETWORK || 'mainnet', 'transactions', mintAddress, String(from || ''), String(to || ''), String(limit));
-    try {
-      const cachedData = await redisClient.get(cacheKey);
-      if (cachedData) {
-        logger.info(`Cache hit for transaction data: ${cacheKey}`);
-        return res.json({
-          success: true,
-          data: JSON.parse(cachedData),
-          cached: true
-        } as APIResponse);
-      }
-    } catch (cacheError) {
-      logger.warn('Redis cache error:', cacheError);
-    }
+    // const cacheKey = generateCacheKey(process.env.NETWORK || 'mainnet', 'transactions', mintAddress, String(from || ''), String(to || ''), String(limit));
+    // try {
+    //   const cachedData = await redisClient.get(cacheKey);
+    //   if (cachedData) {
+    //     logger.info(`Cache hit for transaction data: ${cacheKey}`);
+    //     return res.json({
+    //       success: true,
+    //       data: JSON.parse(cachedData),
+    //       cached: true
+    //     } as APIResponse);
+    //   }
+    // } catch (cacheError) {
+    //   logger.warn('Redis cache error:', cacheError);
+    // }
 
     // Check if mint exists
     const mint = await Mint.findByAddress(mintAddress);
@@ -281,11 +281,11 @@ router.get('/transactions/:mintAddress', authenticateApiKey, asyncHandler(async 
     const transactions = await Transaction.findByMintId(mint.address, { from, to, limit });
 
     // Cache the result for 2 minutes
-    try {
-      await redisClient.setex(cacheKey, 120, JSON.stringify(transactions));
-    } catch (cacheError) {
-      logger.warn('Failed to cache transaction data:', cacheError);
-    }
+    // try {
+    //   await redisClient.setex(cacheKey, 120, JSON.stringify(transactions));
+    // } catch (cacheError) {
+    //   logger.warn('Failed to cache transaction data:', cacheError);
+    // }
 
     return res.json({
       success: true,
@@ -363,20 +363,20 @@ router.get('/ohlc/:mintAddress', authenticateApiKey, asyncHandler(async (req: ex
     const { period, from, to, limit } = queryParams as OHLCQueryParams;
 
     // Check cache first
-    const cacheKey = generateCacheKey(process.env.NETWORK || 'mainnet', 'ohlc', mintAddress, period, String(from || ''), String(to || ''), String(limit));
-    try {
-      const cachedData = await redisClient.get(cacheKey);
-      if (cachedData) {
-        logger.info(`Cache hit for OHLC data: ${cacheKey}`);
-        return res.json({
-          success: true,
-          data: JSON.parse(cachedData),
-          cached: true
-        } as APIResponse);
-      }
-    } catch (cacheError) {
-      logger.warn('Redis cache error:', cacheError);
-    }
+    // const cacheKey = generateCacheKey(process.env.NETWORK || 'mainnet', 'ohlc', mintAddress, period, String(from || ''), String(to || ''), String(limit));
+    // try {
+    //   const cachedData = await redisClient.get(cacheKey);
+    //   if (cachedData) {
+    //     logger.info(`Cache hit for OHLC data: ${cacheKey}`);
+    //     return res.json({
+    //       success: true,
+    //       data: JSON.parse(cachedData),
+    //       cached: true
+    //     } as APIResponse);
+    //   }
+    // } catch (cacheError) {
+    //   logger.warn('Redis cache error:', cacheError);
+    // }
 
     // Check if mint exists
     const mint = await Mint.findByAddress(mintAddress);
@@ -391,11 +391,11 @@ router.get('/ohlc/:mintAddress', authenticateApiKey, asyncHandler(async (req: ex
     const ohlcData = await OHLCData.findByMintAndPeriod(mint.address, period, { from, to, limit });
 
     // Cache the result for 5 minutes
-    try {
-      await redisClient.setex(cacheKey, 300, JSON.stringify(ohlcData));
-    } catch (cacheError) {
-      logger.warn('Failed to cache OHLC data:', cacheError);
-    }
+    // try {
+    //   await redisClient.setex(cacheKey, 300, JSON.stringify(ohlcData));
+    // } catch (cacheError) {
+    //   logger.warn('Failed to cache OHLC data:', cacheError);
+    // }
 
     return res.json({
       success: true,

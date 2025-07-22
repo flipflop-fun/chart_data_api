@@ -5,7 +5,7 @@ import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 
 import logger from './config/logger';
-import redisClient from './config/redis';
+// import redisClient from './config/redis';
 import { SchedulerService } from './services/SchedulerService';
 import apiRoutes from './routes/api';
 import { HealthChecker } from './utils/healthCheck';
@@ -63,14 +63,14 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 process.on('SIGTERM', async () => {
   logger.info('SIGTERM received, shutting down gracefully');
   SchedulerService.stop();
-  await redisClient.quit();
+  // await redisClient.quit();
   process.exit(0);
 });
 
 process.on('SIGINT', async () => {
   logger.info('SIGINT received, shutting down gracefully');
   SchedulerService.stop();
-  await redisClient.quit();
+  // await redisClient.quit();
   process.exit(0);
 });
 
