@@ -16,6 +16,7 @@ const app = express();
 const PORT = parseInt(process.env.PORT || '9090');
 
 // Security middleware
+app.set('trust proxy', 1);
 app.use(helmet());
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : '*',
