@@ -85,6 +85,7 @@ export class OHLCService {
       if (transactions.length === 0) {
         return 0;
       }
+      console.log("===>", mintId, period, latestOHLC, startTime, transactions.length);
 
       // Group transactions by time periods
       const groupedTransactions = this.groupTransactionsByPeriod(transactions, periodMinutes);

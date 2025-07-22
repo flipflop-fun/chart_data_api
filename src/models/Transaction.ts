@@ -46,7 +46,7 @@ export class Transaction {
     }
     
     query += ` ORDER BY timestamp ASC`;
-    
+    console.log("=== query:", query, params);
     const result = await pool.query(query, params);
     return result.rows;
   }
