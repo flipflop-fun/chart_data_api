@@ -38,11 +38,11 @@ export class Transaction {
       SELECT * FROM transactions 
       WHERE mint_id = $1 AND timestamp >= $2
     `;
-    const params: any[] = [mintId, startTime];
+    const params: any[] = [mintId, Math.floor(startTime / 1000)];
     
     if (endTime !== undefined) {
       query += ` AND timestamp <= $3`;
-      params.push(endTime);
+      params.push(Math.floor(endTime / 1000));
     }
     
     query += ` ORDER BY timestamp ASC`;
