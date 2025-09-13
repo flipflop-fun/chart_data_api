@@ -1,18 +1,19 @@
 // Get transaction data for a specific mint (for charts)
 export const queryAllTokenMintForChart = `
-  query QueryAllTokenMintForChart($mint: String!, $skip: Int!, $first: Int!) {
-    mintTokenEntities(
-      where: { mint: $mint }
-      skip: $skip
+  query QueryAllTokenMintForChart($mint: String!, $offset: Int!, $first: Int!) {
+    allMintTokenEntities(
+      condition: { mint: $mint }
+      offset: $offset
       first: $first
-      orderBy: timestamp
-      orderDirection: desc
+      orderBy: TIMESTAMP_DESC
     ) {
-      timestamp
-      mintSizeEpoch
-      mintFee
-      currentEra
-      currentEpoch
+      nodes {
+        timestamp
+        mintSizeEpoch
+        mintFee
+        currentEra
+        currentEpoch
+      }
     }
   }
 `;
@@ -20,18 +21,20 @@ export const queryAllTokenMintForChart = `
 // Get transaction data for a specific mint (general query)
 export const GET_MINT_TRANSACTIONS = `
   query GetMintTransactions($mintAddress: String!, $limit: Int, $offset: Int) {
-    mintTokenEntities(
-      where: { mint: $mintAddress }
-      skip: $offset
+    allMintTokenEntities(
+      condition: { mint: $mintAddress }
+      offset: $offset
       first: $limit
-      orderBy: timestamp
-      orderDirection: desc
+      orderBy: TIMESTAMP_DESC
     ) {
-      timestamp
-      mintSizeEpoch
-      mintFee
-      currentEra
-      currentEpoch
+      nodes {
+        timestamp
+        mintSizeEpoch
+        mintFee
+        currentEra
+        currentEpoch
+      }
+      totalCount
     }
   }
 `;
@@ -39,12 +42,17 @@ export const GET_MINT_TRANSACTIONS = `
 // Find a single mint by address
 export const GET_MINT_BY_ADDRESS = `
   query GetMintByAddress($mint: String!) {
-    initializeTokenEventEntities(where: {mint: $mint}) {
-      mint
-      tokenName
-      tokenSymbol
-      tokenId
-      feeRate
+    allInitializeTokenEventEntities(
+      condition: { mint: $mint }
+      first: 1
+    ) {
+      nodes {
+        mint
+        tokenName
+        tokenSymbol
+        tokenId
+        feeRate
+      }
     }
   }
 `;
@@ -52,11 +60,14 @@ export const GET_MINT_BY_ADDRESS = `
 // Get all mint information
 export const GET_ALL_MINTS = `
   query GetAllMints {
-    initializeTokenEventEntities {
-      mint
-      tokenName
-      tokenSymbol
-      tokenId
+    allInitializeTokenEventEntities {
+      nodes {
+        mint
+        tokenName
+        tokenSymbol
+        tokenId
+      }
+      totalCount
     }
   }
 `;

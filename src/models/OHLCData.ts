@@ -1,4 +1,4 @@
-import pool from '../config/database';
+import pgPool from '../config/database';
 import { OHLCRecord, Period } from '../types';
 
 export class OHLCData {
@@ -15,7 +15,7 @@ export class OHLCData {
         updated_at = CURRENT_TIMESTAMP
       RETURNING *
     `;
-    const result = await pool.query(query, [
+    const result = await pgPool.query(query, [
       record.mint_id, 
       record.period, 
       record.timestamp, 
@@ -35,7 +35,7 @@ export class OHLCData {
       FROM ohlc_data 
       WHERE mint_id = $1 AND period = $2
     `;
-    const result = await pool.query(query, [mintId, period]);
+    const result = await pgPool.query(query, [mintId, period]);
     return result.rows[0]?.latest_timestamp || null;
   }
 
@@ -64,7 +64,7 @@ export class OHLCData {
     query += ` ORDER BY timestamp DESC LIMIT $${params.length + 1}`;
     params.push(limit);
     
-    const result = await pool.query(query, params);
+    const result = await pgPool.query(query, params);
     return result.rows;
   }
 
@@ -82,7 +82,7 @@ export class OHLCData {
       ORDER BY timestamp DESC
       LIMIT $5
     `;
-    const result = await pool.query(query, [mintId, period, startTime, endTime, limit]);
+    const result = await pgPool.query(query, [mintId, period, startTime, endTime, limit]);
     return result.rows;
   }
 
@@ -96,7 +96,7 @@ export class OHLCData {
       ORDER BY timestamp DESC
       LIMIT 1
     `;
-    const result = await pool.query(query, [mintId, period]);
+    const result = await pgPool.query(query, [mintId, period]);
     return result.rows[0];
   }
 
@@ -106,6 +106,6 @@ export class OHLCData {
       DELETE FROM ohlc_data 
       WHERE mint_id = $1 AND period = $2
     `;
-    await pool.query(query, [mintId, period]);
+    await pgPool.query(query, [mintId, period]);
   }
 }

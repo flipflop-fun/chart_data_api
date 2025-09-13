@@ -1,19 +1,7 @@
 import dotenv from 'dotenv';
 
 dotenv.config();
-
-// Define GraphQL response interface
-interface GraphQLResponse<T = any> {
-  data?: T;
-  errors?: Array<{
-    message: string;
-    locations?: Array<{
-      line: number;
-      column: number;
-    }>;
-    path?: Array<string | number>;
-  }>;
-}
+import { GraphQLResponse } from '../types';
 
 class GraphQLClient {
   private endpoint: string;

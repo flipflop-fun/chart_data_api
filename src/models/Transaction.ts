@@ -1,4 +1,4 @@
-import pool from '../config/database';
+import pgPool from '../config/database';
 import { TransactionRecord } from '../types';
 
 export class Transaction {
@@ -17,7 +17,7 @@ export class Transaction {
       ON CONFLICT (mint_id, timestamp) DO NOTHING
       RETURNING *
     `;
-    const result = await pool.query(query, [
+    const result = await pgPool.query(query, [
       mintId, timestamp, mintSizeEpoch, mintFee, price, currentEra, currentEpoch
     ]);
     return result.rows[0];
@@ -25,7 +25,7 @@ export class Transaction {
 
   static async getLatestTimestamp(mintId: string): Promise<number> { // Changed to string type
     const query = 'SELECT MAX(timestamp) as latest_timestamp FROM transactions WHERE mint_id = $1';
-    const result = await pool.query(query, [mintId]);
+    const result = await pgPool.query(query, [mintId]);
     return result.rows[0]?.latest_timestamp || 0;
   }
 
@@ -46,7 +46,7 @@ export class Transaction {
     }
     
     query += ` ORDER BY timestamp ASC`;
-    const result = await pool.query(query, params);
+    const result = await pgPool.query(query, params);
     return result.rows;
   }
 
@@ -74,7 +74,7 @@ export class Transaction {
     query += ` ORDER BY timestamp DESC LIMIT $${params.length + 1}`;
     params.push(limit);
     
-    const result = await pool.query(query, params);
+    const result = await pgPool.query(query, params);
     return result.rows;
   }
 
@@ -89,7 +89,7 @@ export class Transaction {
       WHERE mint_id = $1 AND timestamp >= $2 AND timestamp <= $3
       ORDER BY timestamp ASC
     `;
-    const result = await pool.query(query, [mintId, startTime, endTime]);
+    const result = await pgPool.query(query, [mintId, startTime, endTime]);
     return result.rows;
   }
 }

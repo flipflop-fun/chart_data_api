@@ -1,21 +1,14 @@
-import pool from '../config/database';
+import { HealthCheckResult } from '@/types';
+import pgPool from '../config/database';
 // import redisClient from '../config/redis';
 import logger from '../config/logger';
-
-export interface HealthCheckResult {
-  service: string;
-  status: 'healthy' | 'unhealthy';
-  message?: string;
-  timestamp: Date;
-}
 
 export class HealthChecker {
   static async checkDatabase(): Promise<HealthCheckResult> {
     try {
-      const client = await pool.connect();
+      const client = await pgPool.connect();
       const result = await client.query('SELECT NOW() as current_time');
       client.release();
-      
       return {
         service: 'database',
         status: 'healthy',

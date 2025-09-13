@@ -1,29 +1,17 @@
 import client from '../graphql/client';
 import { GET_MINT_BY_ADDRESS, GET_ALL_MINTS } from '../graphql/queries';
-import { MintRecord } from '../types';
-
-// Define GraphQL response interface
-interface InitializeTokenEventEntity {
-  mint: string;
-  tokenName: string;
-  tokenSymbol: string;
-  tokenId: string;
-  feeRate: number;
-}
-
-interface GraphQLMintResponse {
-  initializeTokenEventEntities: InitializeTokenEventEntity[];
-}
+import { GraphQLMintListResponse, MintRecord } from '../types';
 
 export class Mint {
   static async findByAddress(address: string): Promise<MintRecord | undefined> {
     try {
-      const response = await client.request<GraphQLMintResponse>(GET_MINT_BY_ADDRESS, { mint: address.trim() });
-      if (response.initializeTokenEventEntities.length === 0) {
+      const response = await client.request<GraphQLMintListResponse>(GET_MINT_BY_ADDRESS, { mint: address.trim() });
+      const nodes = response.allInitializeTokenEventEntities?.nodes ?? [];
+      if (nodes.length === 0) {
         return undefined;
       }
 
-      const entity = response.initializeTokenEventEntities[0];
+      const entity = nodes[0];
       
       return {
         address: entity.mint,
@@ -39,10 +27,10 @@ export class Mint {
 
   static async getAll(): Promise<MintRecord[]> {
     try {
-      const response = await client.request<GraphQLMintResponse>(GET_ALL_MINTS);
-      
+      const response = await client.request<GraphQLMintListResponse>(GET_ALL_MINTS);
+      const nodes = response.allInitializeTokenEventEntities?.nodes ?? [];
       // Convert GraphQL response to MintRecord array
-      return response.initializeTokenEventEntities.map(entity => ({
+      return nodes.map(entity => ({
         address: entity.mint,
         name: entity.tokenName || undefined,
         symbol: entity.tokenSymbol || undefined,

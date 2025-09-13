@@ -6,9 +6,9 @@ export interface MintTokenEntity {
   currentEpoch: number;
 }
 
-export interface GraphQLResponse {
-  mintTokenEntities: MintTokenEntity[];
-}
+// export interface GraphQLResponse {
+//   mintTokenEntities: MintTokenEntity[];
+// }
 
 export interface MintRecord {
   address: string;
@@ -68,4 +68,52 @@ export type Period = '5m' | '15m' | '30m' | '1h' | '4h' | '1d';
 
 export interface PeriodConfig {
   [key: string]: number;
+}
+
+export interface PGMintTokenResponse {
+  allMintTokenEntities: {
+    nodes: Array<{
+      timestamp: string;
+      mintSizeEpoch: string;
+      mintFee: string;
+      currentEra: number;
+      currentEpoch: number;
+    }>;
+  };
+};
+
+// Define GraphQL response interface
+export interface InitializeTokenEventEntity {
+  mint: string;
+  tokenName: string;
+  tokenSymbol: string;
+  tokenId: string;
+  feeRate: number;
+}
+
+export interface GraphQLMintListResponse {
+  allInitializeTokenEventEntities: {
+    nodes: InitializeTokenEventEntity[];
+    totalCount?: number;
+  };
+}
+
+export interface HealthCheckResult {
+  service: string;
+  status: 'healthy' | 'unhealthy';
+  message?: string;
+  timestamp: Date;
+}
+
+// Define GraphQL response interface
+export interface GraphQLResponse<T = any> {
+  data?: T;
+  errors?: Array<{
+    message: string;
+    locations?: Array<{
+      line: number;
+      column: number;
+    }>;
+    path?: Array<string | number>;
+  }>;
 }

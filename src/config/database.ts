@@ -3,19 +3,20 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const pool = new Pool({
+const pgPool = new Pool({
   connectionString: process.env.POSTGRES_DB_URL,
+  ssl: false,
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
 });
 
-pool.on("connect", (client) => {
+pgPool.on("connect", (client) => {
   console.log("Connected to PostgreSQL database");
 });
 
-pool.on("error", (err) => {
+pgPool.on("error", (err) => {
   console.error("Error with PostgreSQL database:", err);
 });
 
-export default pool;
+export default pgPool;

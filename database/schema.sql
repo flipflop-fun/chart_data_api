@@ -1,8 +1,8 @@
 -- Create database
-CREATE DATABASE mint_price_api_testnet;
+-- CREATE DATABASE mint-price-api-testnet;
 
 -- Use the database
-\c mint_price_api;
+\c mint-price-api-testnet;
 
 -- Create transactions table for raw data (mint_id changed to varchar)
 CREATE TABLE transactions (

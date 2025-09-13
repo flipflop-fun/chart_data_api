@@ -3,7 +3,7 @@ import { queryAllTokenMintForChart } from '../graphql/queries';
 import { Mint } from '../models/Mint';
 import { Transaction } from '../models/Transaction';
 import logger from '../config/logger';
-import { GraphQLResponse } from '../types';
+import { PGMintTokenResponse } from '../types';
 
 export class DataFetchService {
   static async fetchDataForMint(mintAddress: string, batchSize: number = 1000): Promise<number> {
@@ -22,16 +22,16 @@ export class DataFetchService {
       let newTransactionsCount = 0;
 
       while (hasMore) {
-        const data = await graphqlClient.request<GraphQLResponse>(
+        const data = await graphqlClient.request<PGMintTokenResponse>(
           queryAllTokenMintForChart,
           {
             mint: mintAddress,
-            skip: skip,
+            offset: skip,
             first: batchSize
           }
         );
 
-        const transactions = data.mintTokenEntities || [];
+        const transactions = data.allMintTokenEntities?.nodes || [];
         
         if (transactions.length === 0) {
           hasMore = false;
