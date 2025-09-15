@@ -23,6 +23,8 @@ services:
       - RATE_LIMIT_WINDOW_MS=${RATE_LIMIT_WINDOW_MS:-900000}
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-*}
     restart: unless-stopped
+    networks:
+      - flipflop-net
 
   api-mainnet:
     image: node:18-alpine
@@ -46,3 +48,10 @@ services:
       - RATE_LIMIT_WINDOW_MS=${RATE_LIMIT_WINDOW_MS:-900000}
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-*}
     restart: unless-stopped
+    networks:
+      - flipflop-net
+
+networks:
+  flipflop-net:
+    external: true
+    name: data-sink_default
