@@ -30,13 +30,6 @@ yarn install
 ### Start the Service
 
 ```bash
-# Development mode
-yarn dev
-
-# Production mode
-yarn start
-
-# Using Docker
 yarn docker:up
 ```
 
