@@ -36,12 +36,12 @@ services:
     ports:
       - "9090:9090"
     environment:
-      - NETWORK=mainnet
-      - PORT=9090
+      - NETWORK=${NETWORK_MAINNET:-mainnet}
+      - PORT=${PORT_MAINNET:-9090}
       - GRAPHQL_ENDPOINT=${GRAPHQL_ENDPOINT_MAINNET:-https://graph-mainnet.flipflop.plus/graphql}
       - POSTGRES_DB_URL=postgresql://${POSTGRES_DB_USER:-postgres}:${POSTGRES_DB_PASSWORD:-postgres}@${POSTGRES_DB_HOST:-host.docker.internal}:${POSTGRES_DB_PORT:-5433}/${POSTGRES_DB_NAME_MAINNET:-postgres}?sslmode=disable
-      - API_KEYS=${API_KEYS_MAINNET:-}
-      - ADMIN_API_KEYS=${ADMIN_API_KEYS_MAINNET:-}
+      - API_KEYS=${API_KEYS:-}
+      - ADMIN_API_KEYS=${ADMIN_API_KEYS:-}
       - RATE_LIMIT_MAX_REQUESTS=${RATE_LIMIT_MAX_REQUESTS:-100}
       - RATE_LIMIT_WINDOW_MS=${RATE_LIMIT_WINDOW_MS:-900000}
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-*}
