@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  api-devnet:
+    image: node:18-alpine
+    container_name: mint-price-api-devnet
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: sh -c "corepack enable && yarn install --frozen-lockfile && yarn build && yarn start"
+    ports:
+      - "9091:9091"
+    environment:
+      - NETWORK=devnet
+      - PORT=9091
+      - GRAPHQL_ENDPOINT=${GRAPHQL_ENDPOINT:-https://graph-devnet.flipflop.plus/graphql}
+      - POSTGRES_DB_URL=${POSTGRES_DB_URL:-postgres://postgres:postgres@host.docker.internal:5433/mint-price-api-devnet?sslmode=disable}
+      - API_KEYS=${API_KEYS:-}
+      - ADMIN_API_KEYS=${ADMIN_API_KEYS:-}
+      - RATE_LIMIT_MAX_REQUESTS=${RATE_LIMIT_MAX_REQUESTS:-100}
+      - RATE_LIMIT_WINDOW_MS=${RATE_LIMIT_WINDOW_MS:-900000}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-*}
+    restart: unless-stopped
+
+  api-mainnet:
+    image: node:18-alpine
+    container_name: mint-price-api-mainnet
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: sh -c "corepack enable && yarn install --frozen-lockfile && yarn build && yarn start"
+    ports:
+      - "9090:9090"
+    environment:
+      - NETWORK=mainnet
+      - PORT=9090
+      - GRAPHQL_ENDPOINT=${GRAPHQL_ENDPOINT_MAINNET:-https://graph.flipflop.plus/graphql}
+      - POSTGRES_DB_URL=${POSTGRES_DB_URL_MAINNET:-postgres://postgres:postgres@host.docker.internal:5433/mint-price-api-mainnet?sslmode=disable}
+      - API_KEYS=${API_KEYS_MAINNET:-}
+      - ADMIN_API_KEYS=${ADMIN_API_KEYS_MAINNET:-}
+      - RATE_LIMIT_MAX_REQUESTS=${RATE_LIMIT_MAX_REQUESTS:-100}
+      - RATE_LIMIT_WINDOW_MS=${RATE_LIMIT_WINDOW_MS:-900000}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-*}
+    restart: unless-stopped
