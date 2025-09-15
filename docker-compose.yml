@@ -11,10 +11,11 @@ services:
     ports:
       - "9091:9091"
     environment:
-      - NETWORK=devnet
-      - PORT=9091
-      - GRAPHQL_ENDPOINT=${GRAPHQL_ENDPOINT:-https://graph-devnet.flipflop.plus/graphql}
-      - POSTGRES_DB_URL=${POSTGRES_DB_URL:-postgres://postgres:postgres@host.docker.internal:5433/mint-price-api-devnet?sslmode=disable}
+      - NETWORK=${NETWORK_DEVNET:-devnet}
+      - PORT=${PORT_DEVNET:-9091}
+      - GRAPHQL_ENDPOINT=${GRAPHQL_ENDPOINT_DEVNET:-https://graph-devnet.flipflop.plus/graphql}
+      - POSTGRES_DB_URL=postgresql://${POSTGRES_DB_USER:-postgres}:${POSTGRES_DB_PASSWORD:-postgres}@${POSTGRES_DB_HOST:-host.docker.internal}:${POSTGRES_DB_PORT:-5433}/${POSTGRES_DB_NAME_DEVNET:-postgres}?sslmode=disable
+      # - POSTGRES_DB_URL=POSTGRES_DB_URL_DEVNET
       - API_KEYS=${API_KEYS:-}
       - ADMIN_API_KEYS=${ADMIN_API_KEYS:-}
       - RATE_LIMIT_MAX_REQUESTS=${RATE_LIMIT_MAX_REQUESTS:-100}
@@ -35,7 +36,8 @@ services:
       - NETWORK=mainnet
       - PORT=9090
       - GRAPHQL_ENDPOINT=${GRAPHQL_ENDPOINT_MAINNET:-https://graph.flipflop.plus/graphql}
-      - POSTGRES_DB_URL=${POSTGRES_DB_URL_MAINNET:-postgres://postgres:postgres@host.docker.internal:5433/mint-price-api-mainnet?sslmode=disable}
+      - POSTGRES_DB_URL=postgresql://${POSTGRES_DB_USER:-postgres}:${POSTGRES_DB_PASSWORD:-postgres}@${POSTGRES_DB_HOST:-host.docker.internal}:${POSTGRES_DB_PORT:-5433}/${POSTGRES_DB_NAME_MAINNET:-postgres}?sslmode=disable
+      # - POSTGRES_DB_URL=POSTGRES_DB_URL_MAINNET
       - API_KEYS=${API_KEYS_MAINNET:-}
       - ADMIN_API_KEYS=${ADMIN_API_KEYS_MAINNET:-}
       - RATE_LIMIT_MAX_REQUESTS=${RATE_LIMIT_MAX_REQUESTS:-100}

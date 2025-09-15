@@ -1,1 +1,0 @@
-pm2 start "yarn start" --name "mint-price-api"
